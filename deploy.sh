@@ -1,6 +1,7 @@
-[ ! -d .venv ] && python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt &>/dev/null
+if [ ! -d .venv ]; then
+	python -m venv .venv
+	.venv/bin/pip install -r requirements.txt
+fi
 [ ! $1 ] && (echo "Port required"; exit 1)
 kill $(cat pid) 2>/dev/null
-gunicorn -w 2 -b 0.0.0.0:$1 speedup.server:app &>log & echo $! >pid
+.venv/bin/gunicorn -w 2 -b 0.0.0.0:$1 speedup.server:app &>log & echo $! >pid
